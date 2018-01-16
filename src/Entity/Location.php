@@ -107,5 +107,9 @@ class Location
      */
     private $longitude;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Position", mappedBy="location")
+     */
+    private $positions;
 
 }
