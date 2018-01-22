@@ -25,4 +25,55 @@ class LocationRepository extends ServiceEntityRepository
         ;
     }
     */
+
+
+    public function searchloca($categories, $localisations){
+        $qb = $this->createQueryBuilder('l');
+        $qb->select('l');
+        if(isset($categories) && $categories != [""]){
+            $i=0;
+            $req='';
+            foreach($categories as $category){
+                if($i>0){
+                    $req.=' OR ';
+                }
+                $req.= 'l.type = :catego'.$i;
+                $qb->setParameter('catego'.$i, $category);
+                $i++;
+            }
+            $qb->where($req);
+        }
+        if(isset($localisations) && $localisations != []){
+            $i=0;
+            $req='';
+            foreach($localisations as $localisation){
+                if($i>0){
+                    $req.=' OR ';
+                }
+                $req.= 'l.postalCode = :local'.$i;
+                $qb->setParameter('local'.$i, $localisation);
+                $i++;
+            }
+            $qb->andWhere($req);
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
+
+    public function getAllPostalCodes(){
+        $qb = $this->createQueryBuilder('l')
+            ->select('DISTINCT l.postalCode')
+            ->orderBy('l.postalCode')
+            ->getQuery();
+        return $qb->getResult();
+    }
+
+    public function getAllTypes(){
+        $qb = $this->createQueryBuilder('l')
+            ->select('DISTINCT l.type')
+            ->orderBy('l.type')
+            ->getQuery();
+        return $qb->getResult();
+    }
 }
